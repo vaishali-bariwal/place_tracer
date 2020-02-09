@@ -50,6 +50,23 @@ class _ThirdScreenState extends State<ThirdScreen> {
       ),
     );
   }
+
+  Widget _googlemap(BuildContext context){
+      return Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition: CameraPosition(target: LatLng(12.9716,77.5946),zoom: 12),
+          onMapCreated: (GoogleMapController controller){
+            _controller.complete(controller);
+          },
+          markers: Set.from(allMarkers),
+          
+        ),
+      );
+  }
+
   Widget _zoomminusfunction(){
     return Align(
       alignment: Alignment.topLeft,
@@ -81,19 +98,5 @@ class _ThirdScreenState extends State<ThirdScreen> {
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target : LatLng(12.9716,77.5946),zoom:zoomVal)));
   }
 
-  Widget _googlemap(BuildContext context){
-      return Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(target: LatLng(12.9716,77.5946),zoom: 12),
-          onMapCreated: (GoogleMapController controller){
-            _controller.complete(controller);
-          },
-          markers: Set.from(allMarkers),
-          
-        ),
-      );
-  }
+  
 }
