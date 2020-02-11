@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+//import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -42,8 +42,6 @@ class _ThirdScreenState extends State<ThirdScreen> {
         body: Stack (
           children: <Widget>[
             _googlemap(context),
-            _zoomminusfunction(),
-            _zoomplusfunction(),
             _currLocation(),
             //a_savedLocation(),
 
@@ -66,45 +64,33 @@ class _ThirdScreenState extends State<ThirdScreen> {
             _controller.complete(controller);
           },
           markers: Set.from(allMarkers),
-          
-        ),
+          onLongPress: ((latLng) => _reachTappedLocation(latLng)),
+          )
       );
+  }
+  void _reachTappedLocation(LatLng _lat) {
+     //print('${_lat.latitude}, ${_lat.longitude}');
+    Marker marker = allMarkers.firstWhere(
+        (p) => p.markerId == MarkerId('marker_2'),
+        orElse: () => null);
+    allMarkers.remove(marker);
+    allMarkers.clear();
+    allMarkers.add(
+      Marker(
+        markerId: MarkerId('marker_2'),
+        position: LatLng(_lat.latitude, _lat.longitude),
+        draggable: true,
+        icon: BitmapDescriptor.defaultMarker
+      ),
+    );
+    setState(() {});  
   }
 
-  Widget _zoomminusfunction(){
-    return Align(
-      alignment: Alignment.topLeft,
-      child : IconButton(
-        icon: new Icon(FontAwesomeIcons.searchMinus ,color: Color(0xFFF44336)),
-        onPressed: (){
-          zoomVal--;
-          _minus(zoomVal);
-        }),
-      );
-  }
-  Future<void> _minus(double zoomVal) async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target : LatLng(12.9716,77.5946),zoom:zoomVal)));
-  }
-  Widget _zoomplusfunction(){
-    return Align(
-      alignment: Alignment.topRight,
-      child : IconButton(
-        icon: new Icon(FontAwesomeIcons.searchPlus ,color: Color(0xFFF44336)),
-        onPressed: (){
-          zoomVal++;
-          _plus(zoomVal);
-        }),
-      );
-  }
-  Future<void> _plus(double zoomVal) async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target : LatLng(12.9716,77.5946),zoom:zoomVal)));
-  }
   Widget _currLocation(){
     return Align(
       alignment: Alignment(0.9, .9),
       child : FloatingActionButton(
+        focusColor : Colors.amber,
         onPressed: _getLocation,
         tooltip: 'Get Location',
         child: Icon(Icons.location_searching,size: 20,),
@@ -117,8 +103,9 @@ class _ThirdScreenState extends State<ThirdScreen> {
 
     setState(() {
        allMarkers.clear();
-      final marker = Marker(
+        Marker marker = Marker(
           markerId: MarkerId("curr_loc"),
+          draggable: true,
           position: LatLng(currentLocation.latitude, currentLocation.longitude),
           infoWindow: InfoWindow(title: 'Home'),
       );
