@@ -2,15 +2,15 @@ import 'dart:async';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 
 class ThirdScreen extends StatefulWidget {
   @override
   _ThirdScreenState createState() => _ThirdScreenState();
 }
-
 class _ThirdScreenState extends State<ThirdScreen> {
   Completer<GoogleMapController> _controller = Completer();
-  double zoomVal = 5.0;
+ double zoomVal = 5.0;
   List<Marker> allMarkers = [];
 
   @override
@@ -44,6 +44,8 @@ class _ThirdScreenState extends State<ThirdScreen> {
             _googlemap(context),
             _zoomminusfunction(),
             _zoomplusfunction(),
+            _currLocation(),
+            //a_savedLocation(),
 
           ],
         )
@@ -58,6 +60,8 @@ class _ThirdScreenState extends State<ThirdScreen> {
         child: GoogleMap(
           mapType: MapType.normal,
           initialCameraPosition: CameraPosition(target: LatLng(12.9716,77.5946),zoom: 12),
+          myLocationEnabled : true,
+          myLocationButtonEnabled:false,
           onMapCreated: (GoogleMapController controller){
             _controller.complete(controller);
           },
@@ -97,6 +101,29 @@ class _ThirdScreenState extends State<ThirdScreen> {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target : LatLng(12.9716,77.5946),zoom:zoomVal)));
   }
+  Widget _currLocation(){
+    return Align(
+      alignment: Alignment(0.9, .9),
+      child : FloatingActionButton(
+        onPressed: _getLocation,
+        tooltip: 'Get Location',
+        child: Icon(Icons.location_searching,size: 20,),
+      ),
+      );
+  }
+  void _getLocation() async {
+    var currentLocation = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
+    setState(() {
+       allMarkers.clear();
+      final marker = Marker(
+          markerId: MarkerId("curr_loc"),
+          position: LatLng(currentLocation.latitude, currentLocation.longitude),
+          infoWindow: InfoWindow(title: 'Home'),
+      );
+      allMarkers.add(marker);
+    });
+  }
   
 }
