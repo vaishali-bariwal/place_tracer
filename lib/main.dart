@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'thirdScreen.dart';
+import 'googleMap.dart';
+import 'listmarkers.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,7 +20,9 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
+
   @override
+  //_MyHomePageState createState() => _MyHomePageState();
   _MyHomePageState createState() => _MyHomePageState();
 }
 
@@ -88,40 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute<Null>(
                               builder: (BuildContext context) {
-                            return new SecondScreen();
+                            return new MarkerList();
                           }));
                         })),
               ],
             ),
           )
         ]));
-  }
-}
-
-class SecondScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Second Screen'),
-      ),
-      body: Center(
-        child: RaisedButton(
-          color: Colors.red,
-          child: Text(
-            'MARK YOUR LOACTION',
-            style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(38.0),
-              side: BorderSide(color: Colors.red, width: 2.0)),
-          onPressed: () {
-            //Use`Navigator` widget to pop oir go back to previous route / screen
-            Navigator.pop(context);
-          },
-        ),
-      ),
-    );
   }
 }
